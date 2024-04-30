@@ -1,4 +1,4 @@
-import { User as UserModel } from "../model/user";  
+import { User as UserModel } from "../model/user.js";  
   
   export const authController={
     handlePassportCallback: async function (req, res) {
