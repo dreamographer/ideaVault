@@ -1,9 +1,10 @@
 // Import necessary modules
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 // Define schema for Idea model
 const ideaSchema = new mongoose.Schema(
   {
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
     title: {
       type: String,
       required: true,

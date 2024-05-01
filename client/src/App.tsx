@@ -1,8 +1,21 @@
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
 
-const App = () => {
+function App() {
+  // const navigate = useNavigate();
+
   return (
-    <div>App</div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="" element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

@@ -4,9 +4,10 @@ const ideaController = {
 
   getAllIdeas: async (req, res) => {
     try {
-      const ideas = await Idea.find();
+      const user=req.user.tokenData
+      const ideas = await Idea.find({ userId: user.userId });
       res.status(200).json(ideas);
-    } catch (error) {
+    } catch (error) { 
       res.status(500).json({ message: error.message });
     }
   },
