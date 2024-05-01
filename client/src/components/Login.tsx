@@ -2,6 +2,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Google from "/google.png";
+import Github from "/github.png";
 
 const handleGoogleSignIn = async () => {
   const now = new Date();
@@ -34,12 +35,12 @@ const Login = () => {
             alt="Google"
             className="cursor-pointer w-9 h-9"
           />
-          {/* <img
+          <img
             onClick={handleGithubSignIn}
             src={Github}
             alt="GitHUb"
             className="cursor-pointer w-9 h-9"
-          /> */}
+          />
         </div>
       </div>
     </>

@@ -8,14 +8,12 @@ router.get("/genToken", authController.generateToken);
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    // failureRedirect: `${CLIENT_URL}/login`,
   }),
   authController.handlePassportCallback
 );
 router.get(
   "/github/callback",
   passport.authenticate("github", {
-    // failureRedirect: `${CLIENT_URL}/login`,
   }),
   authController.handlePassportCallback
 );
