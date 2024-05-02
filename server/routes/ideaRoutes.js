@@ -8,6 +8,7 @@ router.get(
   "/",isAuthenticated,
   ideaController.getAllIdeas
 );
+router.get("/logout",isAuthenticated,ideaController.logout);
 router.get("/:id",isAuthenticated,ideaController.getIdeaById);
 router.post("/", isAuthenticated,ideaController.createIdea);
 router.put("/:id",isAuthenticated, ideaController.updateIdea);

@@ -26,21 +26,31 @@ const Login = () => {
   }, [navigate, localStorage.getItem("jwt")]);
   return (
     <>
-      <div className="md:mt-3 ">
-        <p>Or continue with</p>
-        <div className="flex gap-4 mt-3 justify-center">
-          <img
+      <div className="md:mt-3  flex-col items-center flex justify-center">
+        <div className="flex pt-10 w-full flex-col justify-center text-center">
+          <p className="text-8xl font-extralight">IdeaVault</p>
+          <p className="text-md text-slate-500 mt-5">
+            Secure Your Ideas with IdeaVault!
+          </p>
+        </div>
+        <div className="flex w-2/4 h-80  flex-col gap-4  justify-center">
+          <p className="text-lg text-center font-light text-slate-900 mt-5">
+            Login to Secure your Ideas...
+          </p>
+          <div
             onClick={handleGoogleSignIn}
-            src={Google}
-            alt="Google"
-            className="cursor-pointer w-9 h-9"
-          />
-          <img
+            className="flex cursor-pointer items-center justify-center gap-3 border rounded-xl p-5"
+          >
+            <img src={Google} alt="Google" className="cursor-pointer w-5 h-5" />{" "}
+            <p>Continue with Google</p>
+          </div>
+          <div
             onClick={handleGithubSignIn}
-            src={Github}
-            alt="GitHUb"
-            className="cursor-pointer w-9 h-9"
-          />
+            className="flex cursor-pointer border gap-3 p-5 items-center justify-center  rounded-xl"
+          >
+            <img src={Github} alt="GitHUb" className="cursor-pointer w-5 h-5" />
+            <p>Continue with GitHub</p>
+          </div>
         </div>
       </div>
     </>

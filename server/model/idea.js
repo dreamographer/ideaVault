@@ -16,7 +16,7 @@ const ideaSchema = new mongoose.Schema(
     notes: {
       type: String,
       required: true,
-    },
+    }, 
     links: {
       type: [String],
     },

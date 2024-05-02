@@ -1,17 +1,24 @@
 import Idea from "../model/idea.js";
 const ideaController = {
-  
-
   getAllIdeas: async (req, res) => {
     try {
-      const user=req.user.tokenData
+      const user = req.user.tokenData;
       const ideas = await Idea.find({ userId: user.userId });
       res.status(200).json(ideas);
-    } catch (error) { 
+    } catch (error) {
       res.status(500).json({ message: error.message });
     }
   },
-
+  logout: async (req, res) => {
+    res
+      .cookie("jwt", null, {
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
+        maxAge: 0,
+      })
+      .send();
+  },
   getIdeaById: async (req, res) => {
     try {
       const idea = await Idea.findById(req.params.id);
@@ -26,7 +33,9 @@ const ideaController = {
 
   createIdea: async (req, res) => {
     const { title, category, notes, links, status, attachments } = req.body;
+    const userId = req.user.tokenData.userId;
     const newIdea = new Idea({
+      userId,
       title,
       category,
       notes,

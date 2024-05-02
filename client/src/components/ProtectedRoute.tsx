@@ -9,7 +9,6 @@ const ProtectedRoute: React.FC= () => {
         if (itemStr) {
           const item = JSON.parse(itemStr);
           const now = new Date();
-          console.log(now.getTime() , item.expiry);
           
           if (now.getTime() > item.expiry) {
             localStorage.removeItem("jwt");
