@@ -54,7 +54,7 @@ export const authController = {
           secure: true,
           maxAge: 24 * 60 * 60 * 1000,
         });
-        return res.redirect(`${CLIENT_URL}/dashboard`);
+        return res.redirect(`${CLIENT_URL}/`);
       }
     } catch (error) {
       console.log(error); 

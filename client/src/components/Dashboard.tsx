@@ -117,11 +117,11 @@ const Dashboard = () => {
           <h2>My Ideas</h2>
         </div>
         <div className="flex gap-5   flex-wrap justify-center mt-10">
-          {ideas.map(idea => (
+          {ideas.map((idea) => (
             <>
-              <Dialog>
+              <Dialog key={idea._id}>
                 <DialogTrigger>
-                  <IdeaCard idea={idea} />
+                  <IdeaCard  idea={idea} />
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader></DialogHeader>
