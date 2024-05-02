@@ -4,7 +4,7 @@ export function isAuthenticated(req, res, next) {
   const token = req.cookies.jwt;
   console.log("token in host", token);
   const data = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
-  req.user.tokenData = data;
+  req.tokenData = data;
   if (!token) {
     return res.status(401).send();
   }

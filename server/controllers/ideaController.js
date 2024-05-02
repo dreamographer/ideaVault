@@ -2,7 +2,7 @@ import Idea from "../model/idea.js";
 const ideaController = {
   getAllIdeas: async (req, res) => {
     try {
-      const user = req.user.tokenData;
+      const user = req.tokenData;
       const ideas = await Idea.find({ userId: user.userId });
       res.status(200).json(ideas);
     } catch (error) {
@@ -33,7 +33,7 @@ const ideaController = {
 
   createIdea: async (req, res) => {
     const { title, category, notes, links, status, attachments } = req.body;
-    const userId = req.user.tokenData.userId;
+    const userId = req.tokenData.userId;
     const newIdea = new Idea({
       userId,
       title,
