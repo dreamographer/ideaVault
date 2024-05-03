@@ -20,9 +20,24 @@ interface Props {
   idea: Idea;
 }
 const IdeaCard = ({ idea }: Props) => {
+  let color
+  switch(idea.status){
+    case "Completed":{
+      color = "green-400";
+      break;
+    }
+    case "InProgress":{
+      color = "orange-400";
+      break;
+    }
+    case "Pending":{
+      color = "yellow-400";
+      break;
+    }
+  }
   return (
     <>
-      <Card className="p-5">
+      <Card className={`p-5 bg-${color} text-white`}>
         <CardHeader>
           <CardTitle>{idea.title}</CardTitle>
         </CardHeader>

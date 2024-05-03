@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { IoCloseOutline } from "react-icons/io5";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import ReactDOM from "react-dom";
 const FormSchema = z.object({
   title: z
     .string()
@@ -47,7 +48,7 @@ const IdeaForm: React.FC<IdeaFormProps> = ({ onSubmit, onClose }) => {
     resolver: zodResolver(FormSchema),
   });
 
-  return (
+  return  ReactDOM.createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white  p-6 rounded shadow-lg w-full max-w-md">
         <div className="flex justify-between items-center  pt-2 mb-0 pb-0">
@@ -132,7 +133,7 @@ const IdeaForm: React.FC<IdeaFormProps> = ({ onSubmit, onClose }) => {
           </div>
         </form>
       </div>
-    </div>
+    </div>,document.body
   );
 };
 

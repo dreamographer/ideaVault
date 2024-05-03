@@ -103,7 +103,7 @@ const Dashboard = () => {
    };
   return (
     <>
-      <div className="pb-14 px-3">
+      <div className="pb-14 px-3" >
         <div className="p-5 flex justify-between ">
           <h1 className="text-3xl  text-center font-light">IdeaValut</h1>
           <button

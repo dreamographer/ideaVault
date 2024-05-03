@@ -7,19 +7,23 @@ import {
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
-
+import Test from "./components/Test";
+import { MemoryRouter } from "react-router-dom";
 function App() {
 
   return (
-    <Router>
+    // <MemoryRouter>
+ <Router> 
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/app" element={<Test />} />
         <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="" element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
     </Router>
+    // </MemoryRouter>
   );
 }
 
