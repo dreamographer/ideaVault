@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -7,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { cn } from "../lib/utils";
 interface Idea {
   userId: string;
   title: string;
@@ -20,24 +22,27 @@ interface Props {
   idea: Idea;
 }
 const IdeaCard = ({ idea }: Props) => {
-  let color
-  switch(idea.status){
-    case "Completed":{
-      color = "green-400";
-      break;
+  let [color, setColor] = useState("black");
+  useEffect(() => {
+    switch (idea.status) {
+      case "Completed": {
+        setColor("bg-green-400");
+        break;
+      }
+      case "InProgress": {
+        setColor("bg-orange-400");
+        break;
+      }
+      case "Pending": {
+        setColor("bg-yellow-400");
+        break;
+      }
     }
-    case "InProgress":{
-      color = "orange-400";
-      break;
-    }
-    case "Pending":{
-      color = "yellow-400";
-      break;
-    }
-  }
+  }, [idea]);
+
   return (
     <>
-      <Card className={`p-5 bg-${color} text-white`}>
+      <Card className={cn("p-5 text-white",color)}>
         <CardHeader>
           <CardTitle>{idea.title}</CardTitle>
         </CardHeader>
