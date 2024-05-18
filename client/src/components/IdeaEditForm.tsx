@@ -48,6 +48,7 @@ const FormSchema = z.object({
         "Title should at least consist of 3 letters after removing spaces",
     }),
   notes: z.string().min(3, "Note should at least consist of 3 letters"),
+  status: z.enum(["Pending", "InProgress", "Completed"]),
   links: z
     .string()
 
@@ -187,9 +188,9 @@ const IdeaEditForm: React.FC<IdeaEditFormProps> = ({
                 {idea.links?.map(ele => (
                   <>
                     {" "}
-                    <Link className="text-blue-600" to={`http://${ele}`}>
+                    <a className="text-blue-600" href={`http://${ele}`}>
                       {ele}
-                    </Link>{" "}
+                    </a>{" "}
                     <br />
                   </>
                 ))}
