@@ -17,6 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { Link } from "react-router-dom";
 interface Idea {
   _id: string;
   userId: string;
@@ -29,10 +30,44 @@ interface Idea {
 }
 const FormSchema = z.object({
   id: z.string(),
-  title: z.string().min(3, "Title should at least consist of 3 letters"),
-  category: z.string().min(3, "Category should at least consist of 3 letters"),
+  title: z
+    .string()
+    .max(20, { message: "Title can only have maximum 20 letters" })
+    .transform(fullname => fullname.trim())
+    .refine(fullname => fullname.length >= 2, {
+      message:
+        "Title should at least consist of 3 letters after removing spaces",
+    }),
+  category: z
+    .string()
+    .min(3, "Category should at least consist of 3 letters")
+    .max(15, { message: "category can only have maximum 15 letters" })
+    .transform(fullname => fullname.trim())
+    .refine(fullname => fullname.length >= 2, {
+      message:
+        "Title should at least consist of 3 letters after removing spaces",
+    }),
   notes: z.string().min(3, "Note should at least consist of 3 letters"),
-  status: z.enum(["Pending", "InProgress", "Completed"]),
+  links: z
+    .string()
+
+    .refine(
+      links => {
+        if (!links || links === "") {
+          return true;
+        }
+        const linksArray = links.split(",").map(link => link.trim());
+        return linksArray.every(link => {
+          const urlRegex =
+            /^(http:\/\/|https:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+          return urlRegex.test(link);
+        });
+      },
+      {
+        message: "Each link must be a valid URL.",
+      }
+    )
+    .optional(),
 });
 interface IdeaEditFormProps {
   onSubmit: (formData: FieldValues) => void;
@@ -93,8 +128,7 @@ const IdeaEditForm: React.FC<IdeaEditFormProps> = ({
             <div>
               <label
                 htmlFor="category"
-                className="block text-sm font-medium text-gray-700"
-              >
+                className="block text-sm font-medium text-gray-700">
                 Category:
               </label>
               <input
@@ -143,6 +177,48 @@ const IdeaEditForm: React.FC<IdeaEditFormProps> = ({
               )}
             </div>
             <div>
+              <label
+                htmlFor="addedLinks"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Related links
+              </label>
+              <p>
+                {idea.links?.map(ele => (
+                  <>
+                    {" "}
+                    <Link className="text-blue-600" to={`http://${ele}`}>
+                      {ele}
+                    </Link>{" "}
+                    <br />
+                  </>
+                ))}
+              </p>
+            </div>
+            <div>
+              <label
+                htmlFor="links"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Update Links (separate each link with a comma):
+              </label>
+              <Textarea
+                {...register("links")}
+                defaultValue={idea.links}
+                id="links"
+                name="links"
+                placeholder="Enter links here..."
+                className={`mt-1 block w-full border-gray-300 shadow-sm sm:text-sm rounded-md ${
+                  errors.links ? "border-red-500" : ""
+                }`}
+              />
+              {errors.links && (
+                <p className="mt-2 text-sm text-red-600">
+                  {errors.links.message as string}
+                </p>
+              )}
+            </div>
+            <div>
               <label htmlFor="status">Status:</label>
               <select
                 {...register("status")}
@@ -158,14 +234,12 @@ const IdeaEditForm: React.FC<IdeaEditFormProps> = ({
               {errors.status && <p>{errors.status.message as string}</p>}
             </div>
             <div className="flex gap-3">
-              <DialogClose asChild>
-                <button
-                  type="submit"
-                  className="w-full px-4 py-2 bg-blue-500 text-white rounded"
-                >
-                  SAVE
-                </button>
-              </DialogClose>
+              <button
+                type="submit"
+                className="w-full px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                SAVE
+              </button>
               <AlertDialogTrigger>
                 <button
                   type="button"

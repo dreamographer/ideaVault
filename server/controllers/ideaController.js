@@ -23,7 +23,7 @@ const ideaController = {
     try {
       const idea = await Idea.findById(req.params.id);
       if (!idea) {
-        return res.status(404).json({ message: "Idea not found" });
+        return res.status(404).json({ message: "Idea not found" }); 
       }
       res.status(200).json(idea);
     } catch (error) {
@@ -33,13 +33,14 @@ const ideaController = {
 
   createIdea: async (req, res) => {
     const { title, category, notes, links, status, attachments } = req.body;
+    const linkArr = links.split(",").map(link => link.trim());
     const userId = req.tokenData.userId;
     const newIdea = new Idea({
       userId,
       title,
       category,
       notes,
-      links,
+      links:linkArr,
       status,
       attachments,
     });
@@ -53,9 +54,13 @@ const ideaController = {
 
   updateIdea: async (req, res) => {
     try {
+      let linkArr=req.body.links
+      if (linkArr) linkArr = linkArr.split(",").map(link => link.trim());
       const updatedIdea = await Idea.findByIdAndUpdate(
         req.params.id,
-        req.body,
+        {...req.body,
+          links:linkArr
+        },
         { new: true }
       );
       if (!updatedIdea) {
@@ -63,6 +68,7 @@ const ideaController = {
       }
       res.status(200).json(updatedIdea);
     } catch (error) {
+      console.log(error);
       res.status(400).json({ message: error.message });
     }
   },

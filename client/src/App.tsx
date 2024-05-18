@@ -8,11 +8,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Test from "./components/Test";
-import { MemoryRouter } from "react-router-dom";
+
 function App() {
 
   return (
-    // <MemoryRouter>
  <Router> 
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -23,7 +22,6 @@ function App() {
         </Route>
       </Routes>
     </Router>
-    // </MemoryRouter>
   );
 }
 

@@ -25,6 +25,22 @@ const FormSchema = z.object({
         "Title should at least consist of 3 letters after removing spaces",
     }),
   notes: z.string().min(3, "Note should at least consist of 3 letters"),
+  links: z
+    .string()
+    .refine(
+      links => {
+        const linksArray = links.split(",").map(link => link.trim());
+        return linksArray.every(link => {
+          const urlRegex =
+            /^(http:\/\/|https:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+          return urlRegex.test(link);
+        });
+      },
+      {
+        message: "Each link must be a valid URL.",
+      }
+    )
+    .optional(),
 });
 interface IdeaFormProps {
   onSubmit: (formData: FieldValues) => void;
@@ -48,7 +64,7 @@ const IdeaForm: React.FC<IdeaFormProps> = ({ onSubmit, onClose }) => {
     resolver: zodResolver(FormSchema),
   });
 
-  return  ReactDOM.createPortal(
+  return ReactDOM.createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white  p-6 rounded shadow-lg w-full max-w-md">
         <div className="flex justify-between items-center  pt-2 mb-0 pb-0">
@@ -123,6 +139,28 @@ const IdeaForm: React.FC<IdeaFormProps> = ({ onSubmit, onClose }) => {
               </p>
             )}
           </div>
+          <div>
+            <label
+              htmlFor="links"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Links (separate each link with a comma):
+            </label>
+            <Textarea
+              {...register("links")}
+              id="links"
+              name="links"
+              placeholder="Enter links here..."
+              className={`mt-1 block w-full border-gray-300 shadow-sm sm:text-sm rounded-md ${
+                errors.links ? "border-red-500" : ""
+              }`}
+            />
+            {errors.links && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.links.message as string}
+              </p>
+            )}
+          </div>
           <div className=" ">
             <button
               type="submit"
@@ -133,7 +171,8 @@ const IdeaForm: React.FC<IdeaFormProps> = ({ onSubmit, onClose }) => {
           </div>
         </form>
       </div>
-    </div>,document.body
+    </div>,
+    document.body
   );
 };
 

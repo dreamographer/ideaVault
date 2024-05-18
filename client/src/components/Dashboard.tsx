@@ -23,7 +23,7 @@ interface Idea {
   title: string;
   category: string;
   notes: string;
-  links?: string[];
+  links?: string[]; 
   status: "Pending" | "InProgress" | "Completed";
   attachments?: string[];
 }
@@ -62,6 +62,8 @@ const Dashboard = () => {
 
   const handleEditIdea = async (formData: FieldValues) => {
     try {
+      console.log(formData);
+      
       const updatedIdea = await axios.put(
         `${BASE_URL}/api/idea/${formData.id}`,
         formData,
@@ -72,13 +74,11 @@ const Dashboard = () => {
       const updatedIndex = ideas.findIndex(idea => idea._id === formData.id);
 
       if (updatedIndex !== -1) {
-        // Update the ideas array with the updated idea
         const updatedIdeas = [...ideas];
         updatedIdeas[updatedIndex] = updatedIdea.data;
         setIdea(updatedIdeas);
       }
     } catch (error) {
-      // Handle error
       console.error("Error adding idea:", error);
     }
   };
