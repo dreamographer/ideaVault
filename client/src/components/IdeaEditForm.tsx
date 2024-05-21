@@ -207,7 +207,7 @@ const IdeaEditForm: React.FC<IdeaEditFormProps> = ({
                 {idea.links?.map(ele => (
                   <>
                     {" "}
-                    <a className="text-blue-600" href={`http://${ele}`}>
+                    <a className="text-blue-600" target="blank" href={`http://${ele}`}>
                       {ele}
                     </a>{" "}
                     <br />
@@ -253,11 +253,6 @@ const IdeaEditForm: React.FC<IdeaEditFormProps> = ({
                         <a className="text-blue-600" href={ele}>{ele?.split("/")?.pop()?.split("?")[0]}</a>
                       );
                   }
-                  return (
-                    <>
-                      <a href={ele}>{}</a>
-                    </>
-                  );
                 })}
             </div>
             <div>
