@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { z } from "zod";
 import { FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +29,9 @@ const FormSchema = z.object({
     .string()
     .refine(
       links => {
+        if(!links){
+          return true
+        }
         const linksArray = links.split(",").map(link => link.trim());
         return linksArray.every(link => {
           const urlRegex =
@@ -40,6 +43,8 @@ const FormSchema = z.object({
         message: "Each link must be a valid URL.",
       }
     )
+    .optional(),
+  file: z.instanceof(FileList)
     .optional(),
 });
 interface IdeaFormProps {
@@ -64,9 +69,10 @@ const IdeaForm: React.FC<IdeaFormProps> = ({ onSubmit, onClose }) => {
     resolver: zodResolver(FormSchema),
   });
 
+
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white  p-6 rounded shadow-lg w-full max-w-md">
+    <div className="fixed inset-0  overflow-scroll bg-black bg-opacity-50 flex justify-center items-center">
+      <div className=" mt-20 p-6 bg-white  rounded shadow-lg w-full max-w-md">
         <div className="flex justify-between items-center  pt-2 mb-0 pb-0">
           <h3 className="text-lg font-light">Add Your Idea</h3>
           <p onClick={onClose} className="cursor-pointer -mr-1">
@@ -158,6 +164,24 @@ const IdeaForm: React.FC<IdeaFormProps> = ({ onSubmit, onClose }) => {
             {errors.links && (
               <p className="mt-2 text-sm text-red-600">
                 {errors.links.message as string}
+              </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="attachments"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Attachments
+            </label>
+            <Input
+              type="file"
+              {...register("file")}
+              
+            ></Input>
+            {errors.file && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.file.message as string}
               </p>
             )}
           </div>

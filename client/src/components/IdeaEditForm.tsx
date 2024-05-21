@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +18,8 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { Link } from "react-router-dom";
+import { getDownloadURL, ref } from "firebase/storage";
+import { storage } from "../firebase";
 interface Idea {
   _id: string;
   userId: string;
@@ -33,8 +35,8 @@ const FormSchema = z.object({
   title: z
     .string()
     .max(20, { message: "Title can only have maximum 20 letters" })
-    .transform(fullname => fullname.trim())
-    .refine(fullname => fullname.length >= 2, {
+    .transform(title => title.trim())
+    .refine(title => title.length >= 2, {
       message:
         "Title should at least consist of 3 letters after removing spaces",
     }),
@@ -42,8 +44,8 @@ const FormSchema = z.object({
     .string()
     .min(3, "Category should at least consist of 3 letters")
     .max(15, { message: "category can only have maximum 15 letters" })
-    .transform(fullname => fullname.trim())
-    .refine(fullname => fullname.length >= 2, {
+    .transform(category => category.trim())
+    .refine(category => category.length >= 2, {
       message:
         "Title should at least consist of 3 letters after removing spaces",
     }),
@@ -90,6 +92,22 @@ const IdeaEditForm: React.FC<IdeaEditFormProps> = ({
   idea,
 }) => {
   const [toggle, setToggle] = useState(true);
+  const [attachments, setAttachments] = useState<string[]>();
+  useEffect(() => {
+    const getImageUrl = async (url: string) => {
+      try {
+        const imageUrl = await getDownloadURL(ref(storage, `${url}`));
+        return imageUrl;
+      } catch (error) {
+        console.error("Error fetching image URL:", error);
+      }
+    };
+    if (idea.attachments) {
+      Promise.all(idea.attachments.map(ele => getImageUrl(ele))).then(res => {
+        setAttachments(res as string[]);
+      });
+    }
+  }, [idea]);
   const {
     register,
     handleSubmit,
@@ -129,7 +147,8 @@ const IdeaEditForm: React.FC<IdeaEditFormProps> = ({
             <div>
               <label
                 htmlFor="category"
-                className="block text-sm font-medium text-gray-700">
+                className="block text-sm font-medium text-gray-700"
+              >
                 Category:
               </label>
               <input
@@ -220,6 +239,28 @@ const IdeaEditForm: React.FC<IdeaEditFormProps> = ({
               )}
             </div>
             <div>
+              {attachments &&
+                attachments.map(ele => {
+                  switch (
+                    ele?.split("/")?.pop()?.split("?")[0]?.split(".")[1]
+                  ) {
+                    case "jpg":
+                    case "jpeg":
+                    case "png":
+                      return <img src={ele} alt="Attachment" />;
+                    case "pdf":
+                      return (
+                        <a className="text-blue-600" href={ele}>{ele?.split("/")?.pop()?.split("?")[0]}</a>
+                      );
+                  }
+                  return (
+                    <>
+                      <a href={ele}>{}</a>
+                    </>
+                  );
+                })}
+            </div>
+            <div>
               <label htmlFor="status">Status:</label>
               <select
                 {...register("status")}
@@ -234,6 +275,7 @@ const IdeaEditForm: React.FC<IdeaEditFormProps> = ({
               {/* Display validation errors if any */}
               {errors.status && <p>{errors.status.message as string}</p>}
             </div>
+
             <div className="flex gap-3">
               <button
                 type="submit"

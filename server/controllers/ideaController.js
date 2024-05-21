@@ -32,7 +32,8 @@ const ideaController = {
   },
 
   createIdea: async (req, res) => {
-    const { title, category, notes, links, status, attachments } = req.body;
+    const { title, category, notes, links, status, attachments,filePath } = req.body;
+    console.log(filePath);
     const linkArr = links.split(",").map(link => link.trim());
     const userId = req.tokenData.userId;
     const newIdea = new Idea({
@@ -42,7 +43,7 @@ const ideaController = {
       notes,
       links:linkArr,
       status,
-      attachments,
+      attachments:filePath,
     });
     try {
       const savedIdea = await newIdea.save();

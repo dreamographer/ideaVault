@@ -4,7 +4,8 @@ import axios from "axios";
 import IdeaCard from "./IdeaCard";
 import { Button } from "./ui/button";
 import { FieldValues } from "react-hook-form";
-
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../firebase";
 import {
   Dialog,
   DialogContent,
@@ -23,21 +24,23 @@ interface Idea {
   title: string;
   category: string;
   notes: string;
-  links?: string[]; 
+  links?: string[];
   status: "Pending" | "InProgress" | "Completed";
   attachments?: string[];
 }
 const Dashboard = () => {
   const [ideaForm, setIdeaForm] = useState(false);
   const [ideas, setIdea] = useState<Idea[] | []>([]);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
+
   useEffect(() => {
-    console.log("workd");
     async function getIdeas() {
       const res = await fetch(`${BASE_URL}/api/idea/`, {
         credentials: "include",
       });
+
       const data = await res.json();
+      console.log("result", data);
       setIdea(data);
     }
 
@@ -47,8 +50,22 @@ const Dashboard = () => {
     setIdeaForm(!ideaForm);
   };
 
+  const handleFile = async (file: FileList) => {
+    try {
+      const storageRef = ref(storage, `Attachements/${file[0].name}`);
+      return (await uploadBytes(storageRef, file[0])).metadata.fullPath;
+    } catch (error) {
+      console.log("Error uploading file", error);
+    }
+  };
+
   const handleAddIdea = async (formData: FieldValues) => {
     try {
+      let filePath;
+      if (formData.file) {
+        filePath = await handleFile(formData.file);
+      }
+      formData.filePath = filePath;
       const newIdea = await axios.post(`${BASE_URL}/api/idea/`, formData, {
         withCredentials: true,
       });
@@ -62,8 +79,6 @@ const Dashboard = () => {
 
   const handleEditIdea = async (formData: FieldValues) => {
     try {
-      console.log(formData);
-      
       const updatedIdea = await axios.put(
         `${BASE_URL}/api/idea/${formData.id}`,
         formData,
@@ -94,16 +109,17 @@ const Dashboard = () => {
       console.error("Error adding idea:", error);
     }
   };
-   const handleLogout = async() => { 
-       await axios.get(`${BASE_URL}/api/idea/logout`, {
-         withCredentials: true,
-       });
+  const handleLogout = async () => {
+    await axios.get(`${BASE_URL}/api/idea/logout`, {
+      withCredentials: true,
+    });
     localStorage.clear();
-    navigate('/login')
-   };
+    navigate("/login");
+  };
+
   return (
     <>
-      <div className="pb-14 px-3" >
+      <div className="pb-14 px-3">
         <div className="p-5 flex justify-between ">
           <h1 className="text-3xl  text-center font-light">IdeaValut</h1>
           <button
@@ -117,11 +133,19 @@ const Dashboard = () => {
           <h2>My Ideas</h2>
         </div>
         <div className="flex gap-5   flex-wrap justify-center mt-10">
-          {ideas.map((idea) => (
+          {ideas.length < 1 && (
+            <div className="h-80 w-screen flex justify-center items-center">
+              <h1 className="text-center text-4xl font-thin  ">
+                "Capture and nurture your creativity - add your ideas to
+                IdeaVault!"
+              </h1>
+            </div>
+          )}
+          {ideas.map(idea => (
             <>
               <Dialog key={idea._id}>
                 <DialogTrigger>
-                  <IdeaCard  idea={idea} />
+                  <IdeaCard idea={idea} />
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader></DialogHeader>
