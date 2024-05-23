@@ -34,6 +34,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const isAuthenticated = localStorage.getItem("jwt"); 
+    if(!isAuthenticated){
+      navigate('/login')
+    }
     async function getIdeas() {
       const res = await fetch(`${BASE_URL}/api/idea/`, {
         credentials: "include",

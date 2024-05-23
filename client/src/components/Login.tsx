@@ -14,13 +14,18 @@ const handleGoogleSignIn = async () => {
   window.open(`${BASE_URL}/auth/google/callback`, "_self");
 };
 const handleGithubSignIn = async () => {
-  localStorage.setItem("jwt", "TEMP");
+    const now = new Date();
+    const item = {
+      value: "temp",
+      expiry: now.getTime() + 2 * 1000,
+    };
+  localStorage.setItem("jwt", JSON.stringify(item));
   window.open(`${BASE_URL}/auth/github/callback`, "_self");
 };
 const Login = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    if (localStorage.getItem("jwt")) {
+    if (localStorage.getItem("jwt")) { 
       navigate("/dashboard", { replace: true });
     }
   }, [navigate, localStorage.getItem("jwt")]);

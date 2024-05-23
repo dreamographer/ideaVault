@@ -4,7 +4,7 @@ import { useEffect } from "react";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const ProtectedRoute: React.FC= () => {
     useEffect(() => {
-      async function getAuth() {
+      async function getAuth() { 
         const itemStr = localStorage.getItem("jwt");
         if (itemStr) {
           const item = JSON.parse(itemStr);
